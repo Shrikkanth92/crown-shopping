@@ -1,5 +1,6 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { HomePage } from './pages/homepage/homepage.component';
 import  ShopPage from './pages/shop/shoppage.component';
@@ -14,7 +15,6 @@ import { connect } from 'react-redux';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
-
 
 class App extends Component {
 
