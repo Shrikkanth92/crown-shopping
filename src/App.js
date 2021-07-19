@@ -15,6 +15,8 @@ import { connect } from 'react-redux';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
+import { selectLoading } from './redux/shop/shop.selectors';
+import WithSpinner from './components/with-spinner/with-spinner.component';
 
 class App extends Component {
 
@@ -57,7 +59,7 @@ class App extends Component {
               <Route exact path="/shop" component={ShopPage}></Route>
               <Route path="/signin" render={() => this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUpPage />}></Route>
               <Route exact path='/checkout' component={CheckoutPage}></Route>
-              <Route path={`/shop/:categoryId`} component={CategoryPage} />
+              <Route path={`/shop/:categoryId`} render={(props) => <CategoryPageWithSpinner isLoading={this.props.loading} {...props} />} />
             </Switch>
           </BrowserRouter>
         </div>
@@ -65,8 +67,11 @@ class App extends Component {
   }
 }
 
+const CategoryPageWithSpinner = WithSpinner(CategoryPage);
+
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  loading: selectLoading,
 })
 
 const mapDispatchToProps = (dispatch) => ({

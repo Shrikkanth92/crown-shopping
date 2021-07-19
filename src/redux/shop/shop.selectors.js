@@ -12,10 +12,15 @@ export const selectShopCollection = createSelector(
 
 export const selectCategory = memoize(collectionUrl => createSelector(
     [selectShopCollection],
-    categories => categories[collectionUrl]
+    categories => categories ? categories[collectionUrl] : null
 ));
 
 export const selectCategoryForPreview = createSelector(
     [selectShopCollection],
-    categories => Object.keys(categories).map(key => categories[key]),
+    categories => categories ? Object.keys(categories).map(key => categories[key]) : [],
+);
+
+export const selectLoading = createSelector(
+  [selectShop],
+  shop => shop.loading,
 );
