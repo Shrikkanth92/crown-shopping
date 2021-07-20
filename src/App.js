@@ -15,8 +15,9 @@ import { connect } from 'react-redux';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
-import { selectLoading } from './redux/shop/shop.selectors';
+import { selectIsCollectionsLoaded, selectLoading } from './redux/shop/shop.selectors';
 import WithSpinner from './components/with-spinner/with-spinner.component';
+import { fetchCollectionsStartAsync } from './redux/shop/shop.actions';
 
 class App extends Component {
 
@@ -31,6 +32,7 @@ class App extends Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    this.props.fetchCollectionsStartAsync();
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth); 
@@ -59,7 +61,7 @@ class App extends Component {
               <Route exact path="/shop" component={ShopPage}></Route>
               <Route path="/signin" render={() => this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUpPage />}></Route>
               <Route exact path='/checkout' component={CheckoutPage}></Route>
-              <Route path={`/shop/:categoryId`} render={(props) => <CategoryPageWithSpinner isLoading={this.props.loading} {...props} />} />
+              <Route path={`/shop/:categoryId`} render={(props) => <CategoryPageWithSpinner isLoading={!this.props.dataLoaded} {...props} />} />
             </Switch>
           </BrowserRouter>
         </div>
@@ -71,11 +73,12 @@ const CategoryPageWithSpinner = WithSpinner(CategoryPage);
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  loading: selectLoading,
+  dataLoaded: selectIsCollectionsLoaded,
 })
 
 const mapDispatchToProps = (dispatch) => ({
     setCurrentUser: user => dispatch(setCurrentUser(user)),
+    fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
